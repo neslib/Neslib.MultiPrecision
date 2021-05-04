@@ -1,0 +1,127 @@
+object FormMain: TFormMain
+  Left = 0
+  Top = 0
+  BorderStyle = Single
+  Caption = 'Multi Precision Mandelbrot'
+  ClientHeight = 300
+  ClientWidth = 516
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  OnClose = FormClose
+  OnDestroy = FormDestroy
+  OnResize = FormResize
+  DesignerMasterStyle = 0
+  object PaintBox: TPaintBox
+    Align = Client
+    ClipChildren = True
+    Size.Width = 300.000000000000000000
+    Size.Height = 300.000000000000000000
+    Size.PlatformDefault = False
+    OnClick = PaintBoxClick
+    OnPaint = PaintBoxPaint
+  end
+  object LayoutOptions: TLayout
+    Align = Left
+    Margins.Left = 8.000000000000000000
+    Margins.Top = 8.000000000000000000
+    Margins.Right = 8.000000000000000000
+    Margins.Bottom = 8.000000000000000000
+    Position.X = 8.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 200.000000000000000000
+    Size.Height = 284.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object LabelPrecision: TLabel
+      Align = Top
+      AutoSize = True
+      Size.Width = 200.000000000000000000
+      Size.Height = 16.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Precision:'
+    end
+    object ComboBoxPrecision: TComboBox
+      Align = Top
+      Items.Strings = (
+        'Single'
+        'Double'
+        'DoubleDouble'
+        'QuadDouble')
+      ItemIndex = 0
+      Position.Y = 16.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 30.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+    end
+    object ComboBoxMagnification: TComboBox
+      Align = Top
+      DropDownCount = 20
+      Position.Y = 78.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 30.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+    end
+    object LabelMagnification: TLabel
+      Align = Top
+      AutoSize = True
+      Margins.Top = 16.000000000000000000
+      Position.Y = 62.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 16.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Magnification:'
+    end
+    object ButtonUpdateOrCancel: TButton
+      Align = Top
+      Default = True
+      Margins.Top = 16.000000000000000000
+      Position.Y = 124.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 35.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 4
+      Text = 'Update'
+      OnClick = ButtonUpdateOrCancelClick
+    end
+    object LabelGradientOffset: TLabel
+      Align = Top
+      AutoSize = True
+      Margins.Top = 16.000000000000000000
+      Position.Y = 175.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 16.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Gradient offset: 0'
+    end
+    object LabelTime: TLabel
+      Align = Bottom
+      Position.Y = 267.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+    end
+    object TrackBarGradientOffset: TTrackBar
+      Align = Top
+      CanParentFocus = True
+      Max = 127.000000000000000000
+      Orientation = Horizontal
+      Position.Y = 191.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 6
+      OnChange = TrackBarGradientOffsetChange
+    end
+  end
+  object TimerUpdate: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = TimerUpdateTimer
+    Left = 64
+    Top = 224
+  end
+end

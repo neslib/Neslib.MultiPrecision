@@ -1,0 +1,34 @@
+object FormMain: TFormMain
+  Left = 0
+  Top = 0
+  ActiveControl = ButtonUnitTests
+  Caption = 'FastMath Tests'
+  ClientHeight = 480
+  ClientWidth = 320
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 2
+  object Memo: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    ReadOnly = True
+    Align = Client
+    Size.Width = 320.000000000000000000
+    Size.Height = 430.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Viewport.Width = 312.000000000000000000
+    Viewport.Height = 422.000000000000000000
+  end
+  object ButtonUnitTests: TButton
+    Align = Top
+    Default = True
+    Size.Width = 320.000000000000000000
+    Size.Height = 50.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Text = 'Run Unit Tests'
+    OnClick = ButtonUnitTestsClick
+  end
+end
