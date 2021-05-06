@@ -1758,11 +1758,18 @@ var
   QuadDoubleResolution: QuadDouble;
 
 procedure Initialize;
+var
+  State: UInt32;
 begin
-  _dd_init;
-  _qd_init;
-  DoubleDoubleResolution.Init('1e-28');
-  QuadDoubleResolution.Init('1e-59');
+  State := MultiPrecisionInit;
+  try
+    _dd_init;
+    _qd_init;
+    DoubleDoubleResolution.Init('1e-28');
+    QuadDoubleResolution.Init('1e-59');
+  finally
+    MultiPrecisionReset(State);
+  end;
 end;
 
 {$IF Defined(WIN32)}
