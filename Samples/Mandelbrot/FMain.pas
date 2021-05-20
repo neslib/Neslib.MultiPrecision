@@ -143,6 +143,11 @@ var
   I: Integer;
   S: String;
 begin
+  { To test the use of TFormatSettings, set the default format settings to a
+    non-English locale. }
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.ThousandSeparator := '.';
+
   FBitmap := TBitmap.Create;
   FBitmap.SetSize(TMandelbrotGenerator.WIDTH, TMandelbrotGenerator.HEIGHT);
   FOrigOptionsWidth := LayoutOptions.Width;

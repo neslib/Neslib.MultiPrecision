@@ -52,6 +52,9 @@ type
   TUnitTestClass = class of TUnitTest;
   {$M-}
 
+var
+  USFormatSettings: TFormatSettings;
+
 implementation
 
 uses
@@ -161,5 +164,10 @@ begin
   end;
   FChecksPassed := FChecksTotal - FChecksFailed;
 end;
+
+initialization
+  USFormatSettings := TFormatSettings.Create('en-US');
+  USFormatSettings.ThousandSeparator := ',';
+  USFormatSettings.DecimalSeparator := '.';
 
 end.

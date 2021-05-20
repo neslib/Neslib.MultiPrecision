@@ -100,7 +100,7 @@ procedure TTestDoubleDouble.CheckEquals(const AExpected: String;
 var
   Actual: String;
 begin
-  Actual := AActual.ToString(TMPFloatFormat.Fixed);
+  Actual := AActual.ToString(USFormatSettings, TMPFloatFormat.Fixed);
   CheckEquals(AExpected, Actual);
 end;
 
@@ -515,7 +515,7 @@ begin
   CheckEquals(1.224646799147353207e-16, A.X[1], 0);
   CheckEquals('3.1415926535897932384626433832795', A);
 
-  A.Init('2.7182818284590452353602874713527');
+  A.Init('2.7182818284590452353602874713527', USFormatSettings);
   CheckEquals(DoubleDouble.E.X[0], A.X[0], 0);
   CheckEquals(DoubleDouble.E.X[1], A.X[1], 0);
   CheckEquals('2.7182818284590452353602874713527', A);
@@ -963,24 +963,24 @@ begin
   FS := TFormatSettings.Create('nl-NL');
 
   A := DoubleDouble.Zero;
-  CheckEquals('0.0000000000000000000000000000000E+00', A.ToString);
-  CheckEquals('0.0000000000000000000000000000000', A.ToString(TMPFloatFormat.Fixed));
-  CheckEquals('0.00000E+00', A.ToString(TMPFloatFormat.Scientific, 5));
-  CheckEquals('0.00000', A.ToString(TMPFloatFormat.Fixed, 5));
+  CheckEquals('0.0000000000000000000000000000000E+00', A.ToString(USFormatSettings));
+  CheckEquals('0.0000000000000000000000000000000', A.ToString(USFormatSettings, TMPFloatFormat.Fixed));
+  CheckEquals('0.00000E+00', A.ToString(USFormatSettings, TMPFloatFormat.Scientific, 5));
+  CheckEquals('0.00000', A.ToString(USFormatSettings, TMPFloatFormat.Fixed, 5));
   CheckEquals('0,00000E+00', A.ToString(FS, TMPFloatFormat.Scientific, 5));
   CheckEquals('0,00000', A.ToString(FS, TMPFloatFormat.Fixed, 5));
 
   A := DoubleDouble.Pi / 1e3;
-  CheckEquals('3.1415926535897932384626433832795E-03', A.ToString);
-  CheckEquals('0.0031415926535897932384626433833', A.ToString(TMPFloatFormat.Fixed));
-  CheckEquals('3.14159E-03', A.ToString(TMPFloatFormat.Scientific, 5));
-  CheckEquals('0.00314', A.ToString(TMPFloatFormat.Fixed, 5));
+  CheckEquals('3.1415926535897932384626433832795E-03', A.ToString(USFormatSettings));
+  CheckEquals('0.0031415926535897932384626433833', A.ToString(USFormatSettings, TMPFloatFormat.Fixed));
+  CheckEquals('3.14159E-03', A.ToString(USFormatSettings, TMPFloatFormat.Scientific, 5));
+  CheckEquals('0.00314', A.ToString(USFormatSettings, TMPFloatFormat.Fixed, 5));
 
   A := DoubleDouble.E * 1e8;
-  CheckEquals('2.7182818284590452353602874713527E+08', A.ToString);
-  CheckEquals('271828182.8459045235360287471352664625474', A.ToString(TMPFloatFormat.Fixed));
-  CheckEquals('2.71828E+08', A.ToString(TMPFloatFormat.Scientific, 5));
-  CheckEquals('271828182.84590', A.ToString(TMPFloatFormat.Fixed, 5));
+  CheckEquals('2.7182818284590452353602874713527E+08', A.ToString(USFormatSettings));
+  CheckEquals('271828182.8459045235360287471352664625474', A.ToString(USFormatSettings, TMPFloatFormat.Fixed));
+  CheckEquals('2.71828E+08', A.ToString(USFormatSettings, TMPFloatFormat.Scientific, 5));
+  CheckEquals('271828182.84590', A.ToString(USFormatSettings, TMPFloatFormat.Fixed, 5));
 
   A := DoubleDouble.NaN;
   CheckEquals('NAN', A.ToString);

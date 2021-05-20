@@ -108,7 +108,7 @@ type
     procedure Clear; inline;
 
     { Implicitly converts a string to a DoubleDouble.
-      The string *must* use the current system-wide format settings. }
+      The string *must* use the period ('.') as a decimal separator. }
     class operator Implicit(const S: String): DoubleDouble; inline; static;
 
     // *NO* implicit conversions from Double to DoubleDouble, to avoid
@@ -386,7 +386,7 @@ type
     procedure Clear; inline;
 
     { Implicitly converts a string to a DoubleDouble.
-      The string *must* use the current system-wide format settings. }
+      The string *must* use the period ('.') as a decimal separator. }
     class operator Implicit(const S: String): QuadDouble; inline; static;
 
     // *NO* implicit conversions from Double/DoubleDouble to QuadDouble, to
@@ -1743,6 +1743,9 @@ procedure _qd_acosh(const A: QuadDouble; out Res: QuadDouble); overload; externa
 
 procedure _dd_atanh(const A: DoubleDouble; out Res: DoubleDouble); overload; external {$IFDEF USE_LIB}_LIB_MP{$ENDIF} name _PU + 'c_dd_atanh';
 procedure _qd_atanh(const A: QuadDouble; out Res: QuadDouble); overload; external {$IFDEF USE_LIB}_LIB_MP{$ENDIF} name _PU + 'c_qd_atanh';
+
+var
+  _USFormatSettings: TFormatSettings;
 {$ENDREGION 'Internal Declarations'}
 
 implementation
@@ -1761,6 +1764,10 @@ procedure Initialize;
 var
   State: UInt32;
 begin
+  _USFormatSettings := TFormatSettings.Create('en-US');
+  _USFormatSettings.DecimalSeparator := '.';
+  _USFormatSettings.ThousandSeparator := ',';
+
   State := MultiPrecisionInit;
   try
     _dd_init;
@@ -3111,7 +3118,7 @@ end;
 
 class operator DoubleDouble.Implicit(const S: String): DoubleDouble;
 begin
-  Result.Init(S);
+  Result.Init(S, _USFormatSettings);
 end;
 
 class operator DoubleDouble.Explicit(const Value: Double): DoubleDouble;
@@ -3882,7 +3889,7 @@ end;
 
 class operator QuadDouble.Implicit(const S: String): QuadDouble;
 begin
-  Result.Init(S);
+  Result.Init(S, _USFormatSettings);
 end;
 
 class operator QuadDouble.Explicit(const Value: DoubleDouble): QuadDouble;

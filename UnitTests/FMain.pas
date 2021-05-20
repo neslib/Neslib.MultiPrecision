@@ -90,6 +90,12 @@ constructor TFormMain.Create(AOwner: TComponent);
 begin
   inherited;
   ReportMemoryLeaksOnShutdown := True;
+
+  { To test the use of TFormatSettings, set the default format settings to a
+    non-English locale. }
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.ThousandSeparator := '.';
+
   MultiPrecisionInit;
   TMessageManager.DefaultManager.SubscribeToMessage(TTestFailedMessage, TestFailedListener);
 end;

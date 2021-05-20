@@ -52,6 +52,9 @@ const
   CENTER_RE = '-0.00677652295833245729642263781984627256356509565412970431582937';
   CENTER_IM =  '1.00358346588202262420197968965648988617755127635794148856757956';
 
+var
+  USFormatSettings: TFormatSettings;
+
 { TMandelbrotGenerator }
 
 constructor TMandelbrotGenerator.Create(const AMaxIterations: Integer;
@@ -83,8 +86,8 @@ var
   Row, Col, Iter, MaxIter: Integer;
   Data: PInteger;
 begin
-  CenterRe := StrToFloat(CENTER_RE);
-  CenterIm := StrToFloat(CENTER_IM);
+  CenterRe := StrToFloat(CENTER_RE, USFormatSettings);
+  CenterIm := StrToFloat(CENTER_IM, USFormatSettings);
   Radius := 2.5 / FMagnification;
   MaxIter := FMaxIterations;
 
@@ -250,8 +253,8 @@ var
   Row, Col, Iter, MaxIter: Integer;
   Data: PInteger;
 begin
-  CenterRe := StrToFloat(CENTER_RE);
-  CenterIm := StrToFloat(CENTER_IM);
+  CenterRe := StrToFloat(CENTER_RE, USFormatSettings);
+  CenterIm := StrToFloat(CENTER_IM, USFormatSettings);
   Radius := 2.5 / FMagnification;
   MaxIter := FMaxIterations;
 
@@ -297,5 +300,10 @@ begin
     end;
   end;
 end;
+
+initialization
+  USFormatSettings := TFormatSettings.Create('en-US');
+  USFormatSettings.DecimalSeparator := '.';
+  USFormatSettings.ThousandSeparator := ',';
 
 end.
