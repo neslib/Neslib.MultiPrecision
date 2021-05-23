@@ -1882,35 +1882,50 @@ exports
 
 { Global functions }
 
+{$IFDEF MSWINDOWS}
 {$WARN SYMBOL_PLATFORM OFF}
 function MultiPrecisionInit: UInt32;
+var
+  ExceptionMask: TArithmeticExceptionMask;
+  RoundMode: TRoundingMode;
+  PrecisionMode: TFPUPrecisionMode;
 begin
-  {$IFDEF MSWINDOWS}
-  var ExceptionMask := GetExceptionMask;
-  var RoundMode := GetRoundMode;
-  var PrecisionMode := GetPrecisionMode;
+  ExceptionMask := GetExceptionMask;
+  RoundMode := GetRoundMode;
+  PrecisionMode := GetPrecisionMode;
   SetExceptionMask(exAllArithmeticExceptions);
   SetRoundMode(rmNearest);
   SetPrecisionMode(pmDouble);
 
   Result := Byte(ExceptionMask) or (Ord(RoundMode) shl 8) or (Ord(PrecisionMode) shl 16);
-  {$ELSE}
+end;
+
+procedure MultiPrecisionReset(const AState: UInt32);
+var
+  ExceptionMask: TArithmeticExceptionMask;
+  RoundMode: TRoundingMode;
+  PrecisionMode: TFPUPrecisionMode;
+begin
+  ExceptionMask := TArithmeticExceptionMask(Byte(AState));
+  RoundMode := TRoundingMode((AState shr 8) and $FF);
+  PrecisionMode := TFPUPrecisionMode((AState shr 16) and $FF);
+  SetExceptionMask(ExceptionMask);
+  SetRoundMode(RoundMode);
+  SetPrecisionMode(PrecisionMode);
+end;
+{$WARN SYMBOL_PLATFORM ON}
+{$ELSE}
+function MultiPrecisionInit: UInt32;
+begin
+  { Only need for Windows }
   Result := 0;
-  {$ENDIF}
 end;
 
 procedure MultiPrecisionReset(const AState: UInt32);
 begin
-  {$IFDEF MSWINDOWS}
-  var ExceptionMask := TArithmeticExceptionMask(Byte(AState));
-  var RoundMode := TRoundingMode((AState shr 8) and $FF);
-  var PrecisionMode := TFPUPrecisionMode((AState shr 16) and $FF);
-  SetExceptionMask(ExceptionMask);
-  SetRoundMode(RoundMode);
-  SetPrecisionMode(PrecisionMode);
-  {$ENDIF}
+  { Only need for Windows }
 end;
-{$WARN SYMBOL_PLATFORM ON}
+{$ENDIF}
 
 { Common helpers }
 
@@ -3149,7 +3164,7 @@ procedure DoubleDouble.Init(const S: String;
 var
   P: PChar;
   C: Char;
-  Sign, Point, ND, D, E: Integer;
+  Sign, Point, ND, D, E, ESign: Integer;
   R, Ten: DoubleDouble;
 begin
   P := PChar(S);
@@ -3199,11 +3214,21 @@ begin
         'E',
         'e': begin
                Inc(P);
+               ESign := 0;
+               if (P^ = '-') then
+               begin
+                 ESign := -1;
+                 Inc(P);
+               end;
                while (P^ >= '0') and (P^ <= '9') do
                begin
                  D := Ord(P^) - Ord('0');
                  E := (E * 10) + D;
+                 Inc(P);
                end;
+               if (ESign = -1) then
+                 E := -E;
+
                Break;
              end;
       else
@@ -3939,7 +3964,7 @@ procedure QuadDouble.Init(const S: String;
 var
   P: PChar;
   C: Char;
-  Sign, Point, ND, D, E: Integer;
+  Sign, Point, ND, D, E, ESign: Integer;
   R, Ten: QuadDouble;
 begin
   P := PChar(S);
@@ -3989,11 +4014,21 @@ begin
         'E',
         'e': begin
                Inc(P);
+               ESign := 0;
+               if (P^ = '-') then
+               begin
+                 ESign := -1;
+                 Inc(P);
+               end;
                while (P^ >= '0') and (P^ <= '9') do
                begin
                  D := Ord(P^) - Ord('0');
                  E := (E * 10) + D;
+                 Inc(P);
                end;
+               if (ESign = -1) then
+                 E := -E;
+
                Break;
              end;
       else

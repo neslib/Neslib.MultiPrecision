@@ -85,6 +85,8 @@ type
     procedure TestArcSinh;
     procedure TestArcCosh;
     procedure TestArcTanh;
+
+    procedure TestIssue4;
   end;
 
 implementation
@@ -527,6 +529,14 @@ var
 begin
   A := Inverse(DoubleDouble.Pi);
   CheckEquals('0.3183098861837906715377675267450', A);
+end;
+
+procedure TTestDoubleDouble.TestIssue4;
+var
+  A: DoubleDouble;
+begin
+  A := '1E0'; { Should not enter eternal loop }
+  CheckEquals('1.0000000000000000000000000000000', A);
 end;
 
 procedure TTestDoubleDouble.TestLdexp;
