@@ -86,6 +86,7 @@ type
     procedure TestArcCosh;
     procedure TestArcTanh;
 
+    procedure TestIssue3;
     procedure TestIssue4;
   end;
 
@@ -529,6 +530,16 @@ var
 begin
   A := Inverse(DoubleDouble.Pi);
   CheckEquals('0.3183098861837906715377675267450', A);
+end;
+
+procedure TTestDoubleDouble.TestIssue3;
+var
+  X, Y, Z: DoubleDouble;
+begin
+  X := '-3.5';
+  Y := '1.0E-1';
+  Z := Tanh(Y / X);
+  CheckEquals('-0.0285636565708280378650165308100', Z);
 end;
 
 procedure TTestDoubleDouble.TestIssue4;
