@@ -90,6 +90,7 @@ type
 
     procedure TestIssue3;
     procedure TestIssue4;
+    procedure TestIssue5;
   end;
 
 implementation
@@ -642,6 +643,16 @@ var
 begin
   A := '1E0'; { Should not enter eternal loop }
   CheckEquals('1.00000000000000000000000000000000000000000000000000000000000000', A);
+end;
+
+procedure TTestQuadDouble.TestIssue5;
+var
+  X, Y, Z: QuadDouble;
+begin
+  X := '-3.5';
+  Y := '-5.08888E+1';
+  Z := Y / X;
+  CheckEquals('14.53965714285714285714285714285714285714285714285714285714285714', Z);
 end;
 
 procedure TTestQuadDouble.TestLdexp;

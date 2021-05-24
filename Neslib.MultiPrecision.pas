@@ -3219,7 +3219,10 @@ begin
                begin
                  ESign := -1;
                  Inc(P);
-               end;
+               end
+               else if (P^ = '+') then
+                 Inc(P);
+
                while (P^ >= '0') and (P^ <= '9') do
                begin
                  D := Ord(P^) - Ord('0');
@@ -4019,7 +4022,10 @@ begin
                begin
                  ESign := -1;
                  Inc(P);
-               end;
+               end
+               else if (P^ = '+') then
+                 Inc(P);
+
                while (P^ >= '0') and (P^ <= '9') do
                begin
                  D := Ord(P^) - Ord('0');
