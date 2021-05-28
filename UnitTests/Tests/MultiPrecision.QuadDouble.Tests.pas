@@ -91,6 +91,7 @@ type
     procedure TestIssue3;
     procedure TestIssue4;
     procedure TestIssue5;
+    procedure TestIssue6;
   end;
 
 implementation
@@ -653,6 +654,53 @@ begin
   Y := '-5.08888E+1';
   Z := Y / X;
   CheckEquals('14.53965714285714285714285714285714285714285714285714285714285714', Z);
+end;
+
+procedure TTestQuadDouble.TestIssue6;
+var
+  A: QuadDouble;
+begin
+  { These should raise EConvertError exceptions }
+  ShouldRaise(EConvertError,
+    procedure
+    begin
+      A := '- 0';
+    end);
+
+  ShouldRaise(EConvertError,
+    procedure
+    begin
+      A := '+ 1';
+    end);
+
+  ShouldRaise(EConvertError,
+    procedure
+    begin
+      A := '- 2';
+    end);
+
+  ShouldRaise(EConvertError,
+    procedure
+    begin
+      A := '1E - 1';
+    end);
+
+  ShouldRaise(EConvertError,
+    procedure
+    begin
+      A := '1E- 1';
+    end);
+
+  ShouldRaise(EConvertError,
+    procedure
+    begin
+      A := '1E -1';
+    end);
+
+  { These should not raise any exceptions }
+  A := ' 1';
+  A := '1 ';
+  A := ' 1 ';
 end;
 
 procedure TTestQuadDouble.TestLdexp;

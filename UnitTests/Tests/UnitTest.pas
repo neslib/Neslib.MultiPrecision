@@ -42,6 +42,8 @@ type
       const AMsg: String = ''); overload;
     procedure CheckTrue(const ACondition: Boolean);
     procedure CheckFalse(const ACondition: Boolean);
+    procedure ShouldRaise(const AExceptionClass: ExceptClass;
+      const AProc: TProc);
   public
     constructor Create; virtual;
     procedure Run;
@@ -159,10 +161,33 @@ begin
       and (not Method.IsClassMethod) and (not Method.IsStatic) then
     begin
       FCurrentTestMethodName := Method.Name;
-      Method.Invoke(Self, []);
+      try
+        Method.Invoke(Self, []);
+      except
+        on E: Exception do
+          Fail('Unexpected exception of type "%s"', [E.ClassName]);
+      end;
     end;
   end;
   FChecksPassed := FChecksTotal - FChecksFailed;
+end;
+
+procedure TUnitTest.ShouldRaise(const AExceptionClass: ExceptClass;
+  const AProc: TProc);
+begin
+  try
+    AProc();
+  except
+    on E: Exception do
+    begin
+      if (E.ClassType = AExceptionClass) then
+        Exit
+      else
+        Fail('Expected exception of type "%s", but got exception of type "%s"',
+          [AExceptionClass.ClassName, E.ClassName]);
+    end;
+  end;
+  Fail('Expected exception of type "%s"', [AExceptionClass.ClassName]);
 end;
 
 initialization

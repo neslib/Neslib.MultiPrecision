@@ -3134,6 +3134,8 @@ end;
 class operator DoubleDouble.Implicit(const S: String): DoubleDouble;
 begin
   Result.Init(S, _USFormatSettings);
+  if (Result.IsNan) then
+    raise EConvertError.CreateResFmt(@SInvalidFloat, [S]);
 end;
 
 class operator DoubleDouble.Explicit(const Value: Double): DoubleDouble;
@@ -3166,6 +3168,7 @@ var
   C: Char;
   Sign, Point, ND, D, E, ESign: Integer;
   R, Ten: DoubleDouble;
+  HasDigits: Boolean;
 begin
   P := PChar(S);
   Sign := 0;
@@ -3173,15 +3176,16 @@ begin
   ND := 0;
   E := 0;
   Self := NaN;
+  HasDigits := False;
   R.Init;
 
-  while (P^ = ' ') do
+  while (P^ <= ' ') do
     Inc(P);
 
   while True do
   begin
     C := P^;
-    if (C = #0) then
+    if (C <= ' ') then
       Break;
 
     if (C >= '0') and (C <= '9') then
@@ -3189,6 +3193,7 @@ begin
       D := Ord(C) - Ord('0');
       R := (R * 10) + D;
       Inc(ND);
+      HasDigits := True;
     end
     else
     begin
@@ -3213,6 +3218,10 @@ begin
 
         'E',
         'e': begin
+               if (not HasDigits) then
+                 Exit;
+
+               HasDigits := False;
                Inc(P);
                ESign := 0;
                if (P^ = '-') then
@@ -3228,7 +3237,11 @@ begin
                  D := Ord(P^) - Ord('0');
                  E := (E * 10) + D;
                  Inc(P);
+                 HasDigits := True;
                end;
+               if (not HasDigits) then
+                 Exit;
+
                if (ESign = -1) then
                  E := -E;
 
@@ -3241,6 +3254,9 @@ begin
 
     Inc(P);
   end;
+
+  if (not HasDigits) then
+    Exit;
 
   if (Point >= 0) then
     Dec(E, ND - Point);
@@ -3918,6 +3934,8 @@ end;
 class operator QuadDouble.Implicit(const S: String): QuadDouble;
 begin
   Result.Init(S, _USFormatSettings);
+  if (Result.IsNan) then
+    raise EConvertError.CreateResFmt(@SInvalidFloat, [S]);
 end;
 
 class operator QuadDouble.Explicit(const Value: DoubleDouble): QuadDouble;
@@ -3969,6 +3987,7 @@ var
   C: Char;
   Sign, Point, ND, D, E, ESign: Integer;
   R, Ten: QuadDouble;
+  HasDigits: Boolean;
 begin
   P := PChar(S);
   Sign := 0;
@@ -3976,15 +3995,16 @@ begin
   ND := 0;
   E := 0;
   Self := NaN;
+  HasDigits := False;
   R.Init;
 
-  while (P^ = ' ') do
+  while (P^ <= ' ') do
     Inc(P);
 
   while True do
   begin
     C := P^;
-    if (C = #0) then
+    if (C <= ' ') then
       Break;
 
     if (C >= '0') and (C <= '9') then
@@ -3992,6 +4012,7 @@ begin
       D := Ord(C) - Ord('0');
       R := (R * 10) + D;
       Inc(ND);
+      HasDigits := True;
     end
     else
     begin
@@ -4016,6 +4037,10 @@ begin
 
         'E',
         'e': begin
+               if (not HasDigits) then
+                 Exit;
+
+               HasDigits := False;
                Inc(P);
                ESign := 0;
                if (P^ = '-') then
@@ -4031,7 +4056,11 @@ begin
                  D := Ord(P^) - Ord('0');
                  E := (E * 10) + D;
                  Inc(P);
+                 HasDigits := True;
                end;
+               if (not HasDigits) then
+                 Exit;
+
                if (ESign = -1) then
                  E := -E;
 
@@ -4044,6 +4073,9 @@ begin
 
     Inc(P);
   end;
+
+  if (not HasDigits) then
+    Exit;
 
   if (Point >= 0) then
     Dec(E, ND - Point);
