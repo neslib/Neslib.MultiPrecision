@@ -115,8 +115,9 @@ type
     // unintentional conversions that may impact performance.
     //class operator Implicit(const Value: Double): DoubleDouble; inline; static;
 
-    { Explicit conversion from a Double to a DoubleDouble. }
+    { Explicit conversion from a Double or Extended to a DoubleDouble. }
     class operator Explicit(const Value: Double): DoubleDouble; inline; static;
+    class operator Explicit(const Value: Extended): DoubleDouble; inline; static;
 
     { Equality operators.
       Used to compare DoubleDouble values with Double or other DoubleDouble
@@ -198,6 +199,9 @@ type
 
     { Converts this DoubleDouble value to a Double }
     function ToDouble: Double; inline;
+
+    { Converts this DoubleDouble value to an Extended }
+    function ToExtended: Extended; inline;
 
     { Converts this DoubleDouble value to a String.
 
@@ -394,8 +398,10 @@ type
     //class operator Implicit(const Value: Double): QuadDouble; inline; static;
     //class operator Implicit(const Value: DoubleDouble): QuadDouble; inline; static;
 
-    { Explicit conversion from a Double or DoubleDouble to a QuadDouble. }
+    { Explicit conversion from a Double, Extended or DoubleDouble to a
+      QuadDouble. }
     class operator Explicit(const Value: Double): QuadDouble; inline; static;
+    class operator Explicit(const Value: Extended): QuadDouble; inline; static;
     class operator Explicit(const Value: DoubleDouble): QuadDouble; inline; static;
 
     { Equality operators.
@@ -499,6 +505,9 @@ type
 
     { Converts this QuadDouble value to a Double }
     function ToDouble: Double; inline;
+
+    { Converts this QuadDouble value to an Extended }
+    function ToExtended: Extended; inline;
 
     { Converts this QuadDouble value to a DoubleDouble }
     function ToDoubleDouble: DoubleDouble; inline;
@@ -1895,7 +1904,11 @@ begin
   PrecisionMode := GetPrecisionMode;
   SetExceptionMask(exAllArithmeticExceptions);
   SetRoundMode(rmNearest);
+  {$IFDEF WIN32}
+  SetPrecisionMode(pmExtended);
+  {$ELSE}
   SetPrecisionMode(pmDouble);
+  {$ENDIF}
 
   Result := Byte(ExceptionMask) or (Ord(RoundMode) shl 8) or (Ord(PrecisionMode) shl 16);
 end;
@@ -3143,6 +3156,16 @@ begin
   Result.Init(Value);
 end;
 
+class operator DoubleDouble.Explicit(const Value: Extended): DoubleDouble;
+var
+  A, B: Double;
+begin
+  A := Value;
+  B := Value - A;
+  Result.X[0] := A + B;
+  Result.X[1] := B - (Result.X[0] - A);
+end;
+
 procedure DoubleDouble.Init;
 begin
   X[0] := 0;
@@ -3535,6 +3558,11 @@ end;
 function DoubleDouble.ToDouble: Double;
 begin
   Result := X[0];
+end;
+
+function DoubleDouble.ToExtended: Extended;
+begin
+  Result := X[1] + X[0];
 end;
 
 function DoubleDouble.ToInteger: Integer;
@@ -3946,6 +3974,18 @@ end;
 class operator QuadDouble.Explicit(const Value: Double): QuadDouble;
 begin
   Result.Init(Value);
+end;
+
+class operator QuadDouble.Explicit(const Value: Extended): QuadDouble;
+var
+  A, B: Double;
+begin
+  A := Value;
+  B := Value - A;
+  Result.X[0] := A + B;
+  Result.X[1] := B - (Result.X[0] - A);
+  Result.X[2] := 0;
+  Result.X[3] := 0;
 end;
 
 procedure QuadDouble.Init;
@@ -4429,6 +4469,11 @@ end;
 function QuadDouble.ToDoubleDouble: DoubleDouble;
 begin
   Result.Init(X[0], X[1]);
+end;
+
+function QuadDouble.ToExtended: Extended;
+begin
+  Result := X[1] + X[0];
 end;
 
 function QuadDouble.ToInteger: Integer;
